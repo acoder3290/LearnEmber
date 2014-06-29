@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<title>Ember</title>
+	</head>
+	<body>
+		<div class="container" id="github-app">
+		</div>
+		<script type="text/x-handlebars">
+			<div class="row">
+                <div class="col-md-12" >
+                    <h1>Hello Ember</h1>
+                    <hr />
+				</div>
+            </div>	
+            {{outlet}}
+        </script>
+        <script type="text/x-handlebars" data-template-name="index">
+            <p>This is the Github explorer</p>
+            <ul>
+                {{#each dev in model}}
+                <li><a href="#">{{dev}}</a></li>
+                {{/each}}
+            </ul>
+            <p>
+                <button {{action "clickMe"}}>Click me</button>
+            </p>
+            <p>{{renderOn}}</p>
+        </script>
+		<script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/handlebars-1.1.2.js"></script>
+		<script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/ember.js"></script>
+		<script>
+			window.Github = Ember.Application.create({
+				rootElement : "#github-app"
+            });
+
+            Github.IndexRoute = Ember.Route.extend({
+                model : function() {
+                    return ["Ankur","Bansal","Tom","Dale"];
+                }
+            });
+
+            Github.IndexController = Ember.ArrayController.extend({
+                renderOn : function(){
+                    return new Date();
+                }.property(),
+                actions : {
+                    clickMe:function() {
+                        alert("I am clicked");
+                    }
+                }    
+            });    
+		</script>
+	</body>
+</html>
