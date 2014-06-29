@@ -17,38 +17,58 @@
         <script type="text/x-handlebars" data-template-name="index">
             <p>This is the Github explorer</p>
             <ul>
-                {{#each dev in model}}
-                <li><a href="#">{{dev}}</a></li>
+                {{#each}}
+                <li>{{#link-to 'user' this}}{{name}}{{/link-to}}</li>
                 {{/each}}
             </ul>
-            <p>
-                <button {{action "clickMe"}}>Click me</button>
-            </p>
-            <p>{{renderOn}}</p>
         </script>
-		<script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/jquery-1.10.2.js"></script>
+        <script type="text/x-handlebars" data-template-name="user">
+            {{#link-to 'user' this}}<img {{bind-attr src=avatar_url}} style="width:140px" />{{/link-to}}
+            <h3>{{name}}'s Github account</h3>
+            <p>
+                {{company}}<br />
+                {{location}}<br />
+                {{email}}<br />
+            </p>
+            <hr />
+            <table>
+                <tr><td>Followers : </td><td>{{followers}}</td></tr>
+                <tr><td>Repos : </td><td>{{public_repos}}</td></tr>
+                <tr><td>Gists: </td><td>{{public_gists}}</td></tr>
+            </table>
+            <p>
+                {{#link-to "index"}}Back{{/link-to}}
+            </p>
+        </script>
+        <script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/jquery-1.10.2.js"></script>
 		<script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/handlebars-1.1.2.js"></script>
 		<script type="text/javascript" src="/Users/ankurbansal/Work/LearnEmber/libs/ember.js"></script>
-		<script>
+        <script>
+            var devs = [
+                {login: "robconery", name: "Rob Conery"},
+                {login: "shanselman", name: "Scott Hanselman"},
+                {login: "tomdate", name: "Tom Dale"},
+                {login: "wycats", name: "Yehuda Katz"}
+            ];
 			window.Github = Ember.Application.create({
 				rootElement : "#github-app"
             });
 
             Github.IndexRoute = Ember.Route.extend({
                 model : function() {
-                    return ["Ankur","Bansal","Tom","Dale"];
+                    return devs;
                 }
             });
 
-            Github.IndexController = Ember.ArrayController.extend({
-                renderOn : function(){
-                    return new Date();
-                }.property(),
-                actions : {
-                    clickMe:function() {
-                        alert("I am clicked");
-                    }
-                }    
+            Github.Router.map(function() {
+                this.resource("user", {path : "/users/:login"})
+            });
+
+            Github.UserRoute = Ember.Route.extend({
+                model : function(params){
+                    console.log("here" + params);
+                    return Ember.$.getJSON("https://api.github.com/users/" + params.login);
+                }
             });    
 		</script>
 	</body>
